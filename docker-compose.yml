@@ -22,7 +22,7 @@ services:
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
     networks:
-      - dev_common_network
+      - elk
 
   elasticsearch:
     build:
@@ -45,7 +45,7 @@ services:
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
     networks:
-      - dev_common_network
+      - elk
 
   logstash:
     build:
@@ -64,7 +64,7 @@ services:
       LS_JAVA_OPTS: -Xms256m -Xmx256m
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
     networks:
-      - dev_common_network
+      - elk
     depends_on:
       - elasticsearch
 
@@ -80,14 +80,13 @@ services:
     environment:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
     networks:
-      - dev_common_network
+      - elk
     depends_on:
       - elasticsearch
 
 networks:
-  dev_common_network:
-    external:
-      name: dev_common_network
+  elk:
+    driver: bridge
 
 volumes:
   setup:
