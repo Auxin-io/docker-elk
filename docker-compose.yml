@@ -86,8 +86,7 @@ services:
 
 networks:
   common_network:
-    external:
-      name: common_network
+    driver: bridge
 
 volumes:
   setup:
