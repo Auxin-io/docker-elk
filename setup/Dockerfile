@@ -13,7 +13,7 @@ RUN	chown elasticsearch /state
 WORKDIR /setup
 RUN ls -la
 RUN pwd
-RUN	chmod +x /entrypoint.sh
+
 
 USER elasticsearch:root
 
