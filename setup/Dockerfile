@@ -8,6 +8,7 @@ USER root
 COPY . /
 
 RUN ls
+RUN pwd
 RUN set -eux
 RUN	mkdir /state
 RUN	chown elasticsearch /state
