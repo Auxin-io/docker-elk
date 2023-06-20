@@ -29,8 +29,8 @@ pipeline  {
 
         // Docker image used for pushing
         dockerImageelasticsearch = ''
-        // dockerImagekibana = ''
-        // dockerImagelogstash = ''
+        dockerImagekibana = ''
+        dockerImagelogstash = ''
 
         // Conditonal Dynamic variables
         // BranchName = getBranchName()
@@ -67,13 +67,13 @@ pipeline  {
                          -f elasticsearch/Dockerfile \
                          ."""  
 
-                    // def buildOptionskibana = """\
-                    //      -f kibana/Dockerfile \
-                    //      ."""        
+                    def buildOptionskibana = """\
+                         -f kibana/Dockerfile \
+                         ."""        
 
-                    // def buildOptionslogstash = """\
-                    //      -f logstash/Dockerfile \
-                    //      ."""             
+                    def buildOptionslogstash = """\
+                         -f logstash/Dockerfile \
+                         ."""             
 
                     // Echo some sanity value
                     echo "is this is a tag build: ${env.IsThisTagUpdate}"
@@ -113,8 +113,8 @@ pipeline  {
 
                         // make the image using base tag name
                         dockerImageelasticsearch = docker.build(registry + ":elasticsearch" + "_$tagName", buildOptionselasticsearch)
-                        // dockerImagekibana = docker.build(registry + "elasticsearch" + "_$tagName", buildOptionskibana)
-                        // dockerImagelogstash = docker.build(registry + "elasticsearch" + "_$tagName", buildOptionslogstash)
+                        dockerImagekibana = docker.build(registry + ":kibana" + "_$tagName", buildOptionskibana)
+                        dockerImagelogstash = docker.build(registry + ":logstash" + "_$tagName", buildOptionslogstash)
                     }
                     else{
                         echo "We are building a non tag build"
@@ -124,8 +124,8 @@ pipeline  {
                         
                         // make the image using base job name
                         dockerImageelasticsearch = docker.build(registry + ":elasticsearch", buildOptionselasticsearch)
-                        // dockerImagekibana = docker.build(registry + "kibana", buildOptionskibana)
-                        // dockerImagelogstash = docker.build(registry + "logstash", buildOptionslogstash)
+                        dockerImagekibana = docker.build(registry + ":kibana", buildOptionskibana)
+                        dockerImagelogstash = docker.build(registry + ":logstash", buildOptionslogstash)
                     }
                 }
             }
@@ -139,8 +139,8 @@ pipeline  {
                 script {
                     docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential) {
                     dockerImageelasticsearch.push()
-                    // dockerImagekibana.push()
-                    // dockerImagelogstash.push()
+                    dockerImagekibana.push()
+                    dockerImagelogstash.push()
                     }
                 }
             }
