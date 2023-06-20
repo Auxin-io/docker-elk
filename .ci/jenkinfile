@@ -120,11 +120,10 @@ pipeline  {
                         dockerImageElasticsearch.push()
                         dockerImageKibana.push()
                         dockerImageLogstash.push()
+                        }
                     }
                 }
             }
         }
     }
-}
-
 }
