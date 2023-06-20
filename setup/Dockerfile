@@ -11,7 +11,7 @@ RUN set -eux
 RUN	mkdir /state
 RUN	chown elasticsearch /state
 RUN	chmod +x /entrypoint.sh
-
+RUN ls
 USER elasticsearch:root
 
 ENTRYPOINT ["/entrypoint.sh"]
