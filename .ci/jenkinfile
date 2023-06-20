@@ -103,24 +103,27 @@ pipeline  {
                         echo tagName
                         
                         //Build a dockerfile based on args and define them in variable for Production
-                        //we are passing the git tag version and current date
-                        // def buildOptionselasticsearch = """\
-                        //     -f elasticsearch/Dockerfile \
-                        //     ."""  
+                       //we are passing the git tag version and current date
+                        def buildOptionselasticsearchtag = """\
+                            -f elasticsearch/Dockerfile \
+                            ."""  
 
-                        // def buildOptionskibana = """\
-                        //     -f kibana/Dockerfile \
-                        //     ."""        
+                        def buildOptionskibanatag = """\
+                            -f kibana/Dockerfile \
+                            ."""        
 
-                        // def buildOptionslogstash = """\
-                        //     -f logstash/Dockerfile \
-                        //     ."""                                                       
+                        def buildOptionslogstashtag = """\
+                            -f logstash/Dockerfile \
+                            ."""
 
+                        def buildOptionsSetuptag = """\
+                            -f setup/Dockerfile \
+                            ."""    
                         // make the image using base tag name
-                        dockerImageelasticsearch = docker.build(registry + ":elasticsearch" + "_$tagName", buildOptionselasticsearch)
-                        dockerImagekibana = docker.build(registry + ":kibana" + "_$tagName", buildOptionskibana)
-                        dockerImagelogstash = docker.build(registry + ":logstash" + "_$tagName", buildOptionslogstash)
-                        dockerImagesetup = docker.build(registry + ":setup" + "_$tagName", buildOptionsSetup)
+                        dockerImageelasticsearch = docker.build(registry + ":elasticsearch" + "_$tagName", buildOptionselasticsearchtag)
+                        dockerImagekibana = docker.build(registry + ":kibana" + "_$tagName", buildOptionskibanatag)
+                        dockerImagelogstash = docker.build(registry + ":logstash" + "_$tagName", buildOptionslogstashtag)
+                        dockerImagesetup = docker.build(registry + ":setup" + "_$tagName", buildOptionsSetuptag)
                     }
                     else{
                         echo "We are building a non tag build"
