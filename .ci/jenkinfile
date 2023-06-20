@@ -49,8 +49,8 @@ pipeline  {
                 stage('Build and Images') {
                     steps {
                         script {
-                            def dockerfiles = ['elasticsearch/Dockerfile', 'kibana/Dockerfile', 'logstash/Dockerfile', 'setup/Dockerfile']
-                            def imageNames = ['elasticsearch', 'kibana', 'logstash', 'elk-setup']
+                            def dockerfiles = ['elasticsearch/Dockerfile', 'kibana/Dockerfile', 'logstash/Dockerfile']
+                            def imageNames = ['elasticsearch', 'kibana', 'logstash']
                             
                             for (int i = 0; i < dockerfiles.size(); i++) {
                                 def dockerfile = dockerfiles[i]
