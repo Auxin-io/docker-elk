@@ -99,9 +99,9 @@ pipeline  {
                         
                         //Build a dockerfile based on args and define them in variable for Production
                         //we are passing the git tag version and current date
-                        def buildOptionselasticsearch = """\
-                            -f elasticsearch/Dockerfile \
-                            ."""  
+                        // def buildOptionselasticsearch = """\
+                        //     -f elasticsearch/Dockerfile \
+                        //     ."""  
 
                         // def buildOptionskibana = """\
                         //     -f kibana/Dockerfile \
