@@ -9,6 +9,9 @@ COPY . /
 
 RUN ls
 RUN pwd
+WORKDIR /
+RUN ls
+RUN pwd
 RUN set -eux
 RUN	mkdir /state
 RUN	chown elasticsearch /state
