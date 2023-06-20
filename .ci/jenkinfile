@@ -31,6 +31,7 @@ pipeline  {
         dockerImageelasticsearch = ''
         dockerImagekibana = ''
         dockerImagelogstash = ''
+        dockerImagesetup = ''
 
         // Conditonal Dynamic variables
         // BranchName = getBranchName()
@@ -73,7 +74,11 @@ pipeline  {
 
                     def buildOptionslogstash = """\
                          -f logstash/Dockerfile \
-                         ."""             
+                         ."""
+
+                    def buildOptionsSetup = """\
+                         -f setup/Dockerfile \
+                         ."""        
 
                     // Echo some sanity value
                     echo "is this is a tag build: ${env.IsThisTagUpdate}"
@@ -115,6 +120,7 @@ pipeline  {
                         dockerImageelasticsearch = docker.build(registry + ":elasticsearch" + "_$tagName", buildOptionselasticsearch)
                         dockerImagekibana = docker.build(registry + ":kibana" + "_$tagName", buildOptionskibana)
                         dockerImagelogstash = docker.build(registry + ":logstash" + "_$tagName", buildOptionslogstash)
+                        dockerImagesetup = docker.build(registry + ":setup" + "_$tagName", buildOptionsSetup)
                     }
                     else{
                         echo "We are building a non tag build"
@@ -126,6 +132,7 @@ pipeline  {
                         dockerImageelasticsearch = docker.build(registry + ":elasticsearch", buildOptionselasticsearch)
                         dockerImagekibana = docker.build(registry + ":kibana", buildOptionskibana)
                         dockerImagelogstash = docker.build(registry + ":logstash", buildOptionslogstash)
+                        dockerImagesetup = docker.build(registry + ":setup", buildOptionsSetup)
                     }
                 }
             }
@@ -141,6 +148,7 @@ pipeline  {
                     dockerImageelasticsearch.push()
                     dockerImagekibana.push()
                     dockerImagelogstash.push()
+                    dockerImagesetup.push()
                     }
                 }
             }
