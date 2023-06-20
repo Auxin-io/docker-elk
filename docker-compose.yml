@@ -10,11 +10,8 @@ services:
   # subsequent runs, the service simply returns immediately, without performing
   # any modification to existing users.
   setup:
-    build:
-      context: setup/
-      args:
-        ELASTIC_VERSION: ${ELASTIC_VERSION}
-    init: true
+    image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:setup
+    container_name: setup
     volumes:
       - setup:/state:Z
     environment:
@@ -25,10 +22,8 @@ services:
       - common_network
 
   elasticsearch:
-    build:
-      context: elasticsearch/
-      args:
-        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:elasticsearch
+    container_name: elasticsearch
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
       - /home/ubuntu/efs/tools/elk:/usr/share/elasticsearch/data:z
@@ -48,10 +43,8 @@ services:
       - common_network
 
   logstash:
-    build:
-      context: logstash/
-      args:
-        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:logstash
+    container_name: logstash
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
@@ -69,10 +62,8 @@ services:
       - elasticsearch
 
   kibana:
-    build:
-      context: kibana/
-      args:
-        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:kibana
+    container_name: kibana
     volumes:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
     ports:
