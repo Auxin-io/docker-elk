@@ -27,10 +27,6 @@ pipeline  {
         // Build the registry
         registry = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
 
-        // We need two images (Agnet and engine)
-        dockerImageEngine = ''
-        dockerImageAgent = ''
-
         // Conditonal Dynamic variables
         IsThisTagUpdate = isThisTagUpdate()
     }
@@ -70,6 +66,7 @@ pipeline  {
                 // Groovy or shell code must go inside script tags
                 script {
                         // Push the Docker image to a registry
+                        echo "push images"
                         docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential) {
                             dockerImageelasticsearch.push()
                             dockerImagekibana.push()
