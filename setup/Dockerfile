@@ -7,14 +7,12 @@ USER root
 
 COPY . /
 
-RUN ls
-RUN pwd
-WORKDIR /setup
-RUN ls -la
-RUN pwd
 RUN set -eux
 RUN	mkdir /state
 RUN	chown elasticsearch /state
+WORKDIR /setup
+RUN ls -la
+RUN pwd
 RUN	chmod +x /entrypoint.sh
 
 USER elasticsearch:root
