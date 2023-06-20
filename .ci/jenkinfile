@@ -71,7 +71,9 @@ pipeline  {
                 script {
                         // Push the Docker image to a registry
                         docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential) {
-                            docker.image(imageName).push()
+                            dockerImageelasticsearch.push()
+                            dockerImagekibana.push()
+                            dockerImagelogstash.push()
                         }
                     }
                 }
