@@ -49,7 +49,8 @@ pipeline  {
                             def dockerfiles = ['elasticsearch/Dockerfile', 'kibana/Dockerfile', 'logstash/Dockerfile']
                             def imageNames = ['elasticsearch', 'kibana', 'logstash']
                             
-                            for (int i = 0; i < dockerfiles.size(); i++) {
+                            //for (int i = 0; i < dockerfiles.size(); i++) {
+                            for (int i = 0; i < 1; i++) {
                                 def dockerfile = dockerfiles[i]
                                 def imageName = imageNames[i]
                                 
@@ -57,7 +58,7 @@ pipeline  {
                                 docker.build(imageName, "-f ${dockerfile} .")
 
                                 // Push the Docker image to the registry
-                                docker.image(imageName).push()
+                                //docker.image(imageName).push()
                             }
                         }
                     }
