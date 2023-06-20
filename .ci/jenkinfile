@@ -112,7 +112,7 @@ pipeline  {
                         //     ."""                                                       
 
                         // make the image using base tag name
-                        dockerImageelasticsearch = docker.build(registry, "elasticsearch" + "_$tagName", buildOptionselasticsearch)
+                        dockerImageelasticsearch = docker.build(registry + ":elasticsearch" + "_$tagName", buildOptionselasticsearch)
                         // dockerImagekibana = docker.build(registry + "elasticsearch" + "_$tagName", buildOptionskibana)
                         // dockerImagelogstash = docker.build(registry + "elasticsearch" + "_$tagName", buildOptionslogstash)
                     }
@@ -123,7 +123,7 @@ pipeline  {
                         sh "echo 'Hello from main $GIT_COMMITTER_NAME'"                     
                         
                         // make the image using base job name
-                        dockerImageelasticsearch = docker.build(registry, "elasticsearch", buildOptionselasticsearch)
+                        dockerImageelasticsearch = docker.build(registry + ":elasticsearch", buildOptionselasticsearch)
                         // dockerImagekibana = docker.build(registry + "kibana", buildOptionskibana)
                         // dockerImagelogstash = docker.build(registry + "logstash", buildOptionslogstash)
                     }
