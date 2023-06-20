@@ -9,7 +9,7 @@ COPY . /
 
 RUN ls
 RUN pwd
-WORKDIR /
+WORKDIR /setup
 RUN ls
 RUN pwd
 RUN set -eux
