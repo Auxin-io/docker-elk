@@ -28,7 +28,9 @@ pipeline  {
         registry = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
 
         // Docker image used for pushing
-        dockerImage = ''
+        dockerImageelasticsearch = ''
+        dockerImagekibana = ''
+        dockerImagelogstash = ''
 
         // Conditonal Dynamic variables
         // BranchName = getBranchName()
@@ -61,9 +63,17 @@ pipeline  {
                 
                     //Build a dockerfile based on args and define them in variable for development
                     // we are passing latest version for development with current date
-                    def buildOptions = """\
+                    def buildOptionselasticsearch = """\
                          -f elasticsearch/Dockerfile \
-                         ."""                  
+                         ."""  
+
+                    def buildOptionskibana = """\
+                         -f kibana/Dockerfile \
+                         ."""        
+
+                    def buildOptionslogstash = """\
+                         -f logstash/Dockerfile \
+                         ."""             
 
                     // Echo some sanity value
                     echo "is this is a tag build: ${env.IsThisTagUpdate}"
@@ -89,12 +99,22 @@ pipeline  {
                         
                         //Build a dockerfile based on args and define them in variable for Production
                         //we are passing the git tag version and current date
-                        buildOptions = """\
-                         -f elasticsearch/Dockerfile \
-                         ."""                                               
+                        def buildOptionselasticsearch = """\
+                            -f elasticsearch/Dockerfile \
+                            ."""  
+
+                        def buildOptionskibana = """\
+                            -f kibana/Dockerfile \
+                            ."""        
+
+                        def buildOptionslogstash = """\
+                            -f logstash/Dockerfile \
+                            ."""                                                       
 
                         // make the image using base tag name
-                        dockerImage = docker.build(registry + ":$JOB_BASE_NAME" + "_$tagName", buildOptions)
+                        dockerImageelasticsearch = docker.build(registry + "elasticsearch" + "_$tagName", buildOptionselasticsearch)
+                        dockerImagekibana = docker.build(registry + "elasticsearch" + "_$tagName", buildOptionskibana)
+                        dockerImagelogstash = docker.build(registry + "elasticsearch" + "_$tagName", buildOptionslogstash)
                     }
                     else{
                         echo "We are building a non tag build"
@@ -103,7 +123,9 @@ pipeline  {
                         sh "echo 'Hello from main $GIT_COMMITTER_NAME'"                     
                         
                         // make the image using base job name
-                        dockerImage = docker.build(registry + ":$JOB_BASE_NAME"+ "elasticsearch", buildOptions)
+                        dockerImageelasticsearch = docker.build(registry + "elasticsearch", buildOptionselasticsearch)
+                        dockerImagekibana = docker.build(registry + "kibana", buildOptionskibana)
+                        dockerImagelogstash = docker.build(registry + "logstash", buildOptionslogstash)
                     }
                 }
             }
@@ -116,7 +138,9 @@ pipeline  {
                 // Groovy or shell code must go inside script tags
                 script {
                     docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential) {
-                    dockerImage.push()
+                    dockerImageelasticsearch.push()
+                    dockerImagekibana.push()
+                    dockerImagelogstash.push()
                     }
                 }
             }
