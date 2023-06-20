@@ -45,6 +45,7 @@ pipeline  {
                 stage('Build and Images') {
                     steps {
                         script {
+                            def docker = docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential)
                             def dockerfiles = ['elasticsearch/Dockerfile', 'kibana/Dockerfile', 'logstash/Dockerfile']
                             def imageNames = ['elasticsearch', 'kibana', 'logstash']
                             
@@ -54,24 +55,12 @@ pipeline  {
                                 
                                 // Build and tag the Docker image
                                 docker.build(imageName, "-f ${dockerfile} .")
+
+                                // Push the Docker image to the registry
+                                docker.image(imageName).push()
                             }
                         }
                     }
                 }
-
-        // Stage to publish to ECR
-        stage('Publish to ECR') {
-            steps{
-
-                // Groovy or shell code must go inside script tags
-                script {
-                        // Push the Docker image to a registry
-                        echo "push images"
-                        docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential) {
-                            docker.image(imageName).push()
-                        }
-                    }
-                }
-            }
         }
     }
