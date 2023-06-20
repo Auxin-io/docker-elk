@@ -45,7 +45,7 @@ pipeline  {
                 stage('Build and Images') {
                     steps {
                         script {
-                            def docker = docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential)
+                            //def docker = docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential)
                             def dockerfiles = ['elasticsearch/Dockerfile', 'kibana/Dockerfile', 'logstash/Dockerfile']
                             def imageNames = ['elasticsearch', 'kibana', 'logstash']
                             
