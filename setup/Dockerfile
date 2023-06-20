@@ -10,7 +10,7 @@ COPY . /
 RUN ls
 RUN pwd
 WORKDIR /setup
-RUN ls
+RUN ls -la
 RUN pwd
 RUN set -eux
 RUN	mkdir /state
