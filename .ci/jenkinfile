@@ -29,6 +29,13 @@ pipeline  {
 
         // Conditonal Dynamic variables
         IsThisTagUpdate = isThisTagUpdate()
+
+        // Docker image used for pushing
+        dockerImage = ''
+       
+        // Get Current Time
+        // https://www.thiscodeworks.com/current-date-at-pipeline-method-1-variable-groovy-jenkins-pipeline/610bc8aef724050014f7d22f
+        currentDate = sh(returnStdout: true, script: 'date --utc +%Y-%m-%d-%H-%M-%S').trim()
     }
 
     /*
@@ -42,26 +49,31 @@ pipeline  {
 
     // stages
         stages {
-                stage('Build and Images') {
-                    steps {
-                        script {
-                            //def docker = docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential)
-                            def dockerfiles = ['elasticsearch/Dockerfile', 'kibana/Dockerfile', 'logstash/Dockerfile']
-                            def imageNames = ['elasticsearch', 'kibana', 'logstash']
+            stage('Build and Images') {
+                steps {
+                    script {
+                         
+                        // List of the location of docker files
+                        def dockerfiles = ['elasticsearch/Dockerfile', 'kibana/Dockerfile', 'logstash/Dockerfile']
+                        
+                        // List of the image name
+                        def imageNames = ['elasticsearch', 'kibana', 'logstash']
+                        
+                        //for (int i = 0; i < dockerfiles.size(); i++) {
+                        for (int i = 0; i < 1; i++) {
+                            def dockerfile = dockerfiles[i]
+                            def imageName = imageNames[i]
                             
-                            //for (int i = 0; i < dockerfiles.size(); i++) {
-                            for (int i = 0; i < 1; i++) {
-                                def dockerfile = dockerfiles[i]
-                                def imageName = imageNames[i]
-                                
-                                // Build and tag the Docker image
-                                docker.build(imageName, "-f ${dockerfile} .")
+                            // Build and tag the Docker image
+                            dockerImage = docker.build(imageName, "-f ${dockerfile} .")
 
-                                // Push the Docker image to the registry
-                                //docker.image(imageName).push()
+                            // push the image 
+                            docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential) {
+                                dockerImage.push()
                             }
                         }
                     }
                 }
+            }
         }
     }
