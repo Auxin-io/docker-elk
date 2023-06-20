@@ -1,4 +1,4 @@
-def isThisTagUpdate() { 
+def isThisTagUpdate() {
 
     // Get the variable from env variable
     def inputBranchName = "${env.GIT_BRANCH}"
@@ -27,8 +27,17 @@ pipeline  {
         // Build the registry
         registry = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
 
+        // Docker image used for pushing
+        dockerImage = ''
+
         // Conditonal Dynamic variables
+        // BranchName = getBranchName()
+        // TagName    = getTagName()
         IsThisTagUpdate = isThisTagUpdate()
+        
+        // Get Current Time
+        // https://www.thiscodeworks.com/current-date-at-pipeline-method-1-variable-groovy-jenkins-pipeline/610bc8aef724050014f7d22f
+        currentDate = sh(returnStdout: true, script: 'date --utc +%Y-%m-%d-%H-%M-%S').trim()
     }
 
     /*
@@ -37,44 +46,38 @@ pipeline  {
      * https://stackoverflow.com/questions/48762111/how-to-detect-jenkins-multibranch-branch-or-tag
      */
 
-    // Build on any  agent
+    // Build on any stage
     agent any
 
     // stages
     stages {
 
-        // Build Docker stage This stage is centralized for both production and dev
-        stage('Build Engine Image') {
+        // Build Docker stage
+        stage('Build Image') {
             steps{
-
+            
                 // Groovy or shell code must go inside script tags
                 script {
+                
+                    //Build a dockerfile based on args and define them in variable for development
+                    // we are passing latest version for development with current date
+                    def buildOptions = """\
+                         -f elasticsearch/Dockerfile \
+                         ."""                  
 
                     // Echo some sanity value
                     echo "is this is a tag build: ${env.IsThisTagUpdate}"
 
-                    // Define a variable
+                    // define a variable
                     def isThisTagBuild = "${env.IsThisTagUpdate}"
                     echo isThisTagBuild
 
-                    // Build a dockerfile for engine
-                    def buildOptionsElasticsearch = """\
-                        -f elasticsearch/Dockerfile \
-                        ."""
-
-                    // Build a dockerfile for agent
-                    def buildOptionsKibana = """\
-                        -f kibana/Dockerfile \
-                        ."""
-                    // Build a docker file for steampipe
-                    def buildOptionsLogstash = """ \
-                        -f logstash/Dockerfile \
-                        ."""
-
                     if ( isThisTagBuild == "true" ){
-
+                        // Print out the Tag Build
                         echo "We are building a Tag Build"
 
+                        //print git commiter name
+                        sh "echo 'The commiter name is $GIT_COMMITTER_NAME'"
 
                         // Get the tag name
                         def inputBranchName = "${env.GIT_BRANCH}"
@@ -83,29 +86,25 @@ pipeline  {
                         // Tokenize the input
                         def (remoteName, tags, tagName) = inputBranchName.tokenize( '/' )
                         echo tagName
+                        
+                        //Build a dockerfile based on args and define them in variable for Production
+                        //we are passing the git tag version and current date
+                        buildOptions = """\
+                         -f elasticsearch/Dockerfile \
+                         ."""                                               
 
-                        // Build the image for engine with git tags
-                        dockerImageElasticsearch = docker.build(registry + ":$JOB_BASE_NAME" + "_$tagName", buildOptionsElasticsearch)
-
-                        // Build the image for agent with git tags
-                        dockerImageKibana = docker.build(registry + ":$JOB_BASE_NAME" + "-agent" + "_$tagName", buildOptionsKibana)
-
-                        // Build the image for steampipenode agent with git tags
-                        dockerImageLogstash = docker.build(registry + ":$JOB_BASE_NAME" + "-steampipeagent" + "_$tagName", buildOptionsLogstash)
-
+                        // make the image using base tag name
+                        dockerImage = docker.build(registry + ":$JOB_BASE_NAME" + "_$tagName", buildOptions)
                     }
                     else{
                         echo "We are building a non tag build"
 
-
-                        // make the image using base tag name for engine
-                        dockerImageElasticsearch = docker.build(registry + ":$JOB_BASE_NAME", buildOptionsElasticsearch)
-
-                        // make the image using base tag name for agent
-                        dockerImageKibana = docker.build(registry + ":$JOB_BASE_NAME", buildOptionsKibana)
-
-                        // make the image using base tag name for steampipe agent
-                        dockerImageLogstash = docker.build(registry + ":$JOB_BASE_NAME", buildOptionsLogstash)
+                        //print git commiter name
+                        sh "echo 'Hello from main $GIT_COMMITTER_NAME'"                     
+                        
+                        // make the image using base job name
+                        dockerImage = docker.build(registry + ":$JOB_BASE_NAME", buildOptions)
+                    }
                 }
             }
         }
@@ -117,10 +116,7 @@ pipeline  {
                 // Groovy or shell code must go inside script tags
                 script {
                     docker.withRegistry("https://" + registry, "ecr:us-east-1:" + registryCredential) {
-                        dockerImageElasticsearch.push()
-                        dockerImageKibana.push()
-                        dockerImageLogstash.push()
-                        }
+                    dockerImage.push()
                     }
                 }
             }
