@@ -103,7 +103,7 @@ pipeline  {
                         sh "echo 'Hello from main $GIT_COMMITTER_NAME'"                     
                         
                         // make the image using base job name
-                        dockerImage = docker.build(registry + ":$JOB_BASE_NAME", buildOptions)
+                        dockerImage = docker.build(registry + ":$JOB_BASE_NAME"+ "elasticsearch", buildOptions)
                     }
                 }
             }
