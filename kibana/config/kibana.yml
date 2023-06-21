@@ -11,3 +11,4 @@ monitoring.ui.container.elasticsearch.enabled: true
 #
 elasticsearch.username: kibana_system
 elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
+server.basePath: ${KIBANA_URL_PREFEX}
