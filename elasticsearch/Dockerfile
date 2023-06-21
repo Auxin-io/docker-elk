@@ -7,7 +7,7 @@ RUN ls -al
 
 RUN pwd
 
-RUN cd config
+WORKDIR config
 
 RUN ls
 
