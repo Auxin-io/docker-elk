@@ -7,7 +7,7 @@ RUN ls -al
 
 RUN pwd
 
-WORKDIR kibana
+WORKDIR /
 
 RUN ls
 
