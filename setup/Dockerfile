@@ -11,7 +11,6 @@ RUN set -eux
 RUN	mkdir /state
 COPY setup /state
 RUN	chown elasticsearch /state
-RUN chmod +x /entrypoint.sh
 WORKDIR /setup
 RUN ls -la
 RUN pwd
