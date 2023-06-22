@@ -7,8 +7,9 @@ RUN ls -al
 
 RUN pwd
 
-WORKDIR config
+COPY ./elasticsearch/config/elasticsearch.yml /usr/share/elasticsearch/config
 
+WORKDIR config
 RUN ls
 
 # Add your elasticsearch plugins setup here
