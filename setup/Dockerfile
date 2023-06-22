@@ -12,9 +12,6 @@ RUN	mkdir /state
 COPY setup /state
 RUN	chown elasticsearch /state
 WORKDIR /setup
-RUN ls -la
-RUN pwd
-
 
 USER elasticsearch:root
 

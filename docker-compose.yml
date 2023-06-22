@@ -2,13 +2,6 @@ version: '3.7'
 
 services:
 
-  # The 'setup' service runs a one-off script which initializes the
-  # 'logstash_internal' and 'kibana_system' users inside Elasticsearch with the
-  # values of the passwords defined in the '.env' file.
-  #
-  # This task is only performed during the *initial* startup of the stack. On all
-  # subsequent runs, the service simply returns immediately, without performing
-  # any modification to existing users.
   setup:
     image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:setup
     container_name: setup
@@ -16,8 +9,6 @@ services:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
-    networks:
-      - common_network
 
   elasticsearch:
     image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:elasticsearch
@@ -36,8 +27,6 @@ services:
       # Use single node discovery in order to disable production mode and avoid bootstrap checks.
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
-    networks:
-      - common_network
 
   logstash:
     image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:logstash
@@ -50,8 +39,6 @@ services:
     environment:
       LS_JAVA_OPTS: -Xms256m -Xmx256m
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
-    networks:
-      - common_network
     depends_on:
       - elasticsearch
 
@@ -62,11 +49,5 @@ services:
       - "5601:5601"
     environment:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
-    networks:
-      - common_network
     depends_on:
       - elasticsearch
-
-networks:
-  common_network:
-    driver: bridge
