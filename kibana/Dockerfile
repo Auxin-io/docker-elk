@@ -5,9 +5,13 @@ FROM docker.elastic.co/kibana/kibana:8.2.0
 
 RUN ls -al
 
+COPY ./kibana/config/kibana.yml /usr/share/kibana/config
+
 RUN pwd
 
-WORKDIR /
+WORKDIR config
+
+RUN cat kibana.yml
 
 RUN ls
 
