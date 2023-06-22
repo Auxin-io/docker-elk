@@ -11,8 +11,10 @@ COPY ./elasticsearch/config/elasticsearch.yml /usr/share/elasticsearch/config
 
 WORKDIR config
 
-RUN cat elasticsearch.yml
+
 RUN ls -al
+
+RUN cat elasticsearch.yml
 
 # Add your elasticsearch plugins setup here
 # Example: RUN elasticsearch-plugin install analysis-icu
