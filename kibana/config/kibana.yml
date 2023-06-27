@@ -9,7 +9,7 @@ monitoring.ui.container.elasticsearch.enabled: true
 
 ## X-Pack security credentials
 #
-elasticsearch.username: kibana_system
+elasticsearch.username: elastic
 elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
 
 # Application will be hosted at http://localhost:5601/tools/elk/
