@@ -2,14 +2,6 @@ version: '3.7'
 
 services:
 
-  setup:
-    image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:setup
-    container_name: setup
-    environment:
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
-      LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
-      KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
-
   elasticsearch:
     image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:elasticsearch
     container_name: elasticsearch
@@ -27,20 +19,6 @@ services:
       # Use single node discovery in order to disable production mode and avoid bootstrap checks.
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
-
-  logstash:
-    image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:logstash
-    container_name: logstash
-    ports:
-      - "5044:5044"
-      - "5000:5000/tcp"
-      - "5000:5000/udp"
-      - "9600:9600"
-    environment:
-      LS_JAVA_OPTS: -Xms256m -Xmx256m
-      LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
-    depends_on:
-      - elasticsearch
 
   kibana:
     image: 672029928308.dkr.ecr.us-east-1.amazonaws.com/ecr-alphascale-tools:kibana
