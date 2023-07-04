@@ -13,4 +13,4 @@ elasticsearch.username: kibana_system
 elasticsearch.password: ${KIBANA_SYSTEM_PASSWORD}
 
 # Application will be hosted at http://localhost:5601/tools/elk/
-# server.basePath: "/tools/elk"
+server.basePath: "/tools/elk"
